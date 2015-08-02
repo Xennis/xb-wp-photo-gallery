@@ -20,9 +20,9 @@ class View_List_Gallery extends CRUD_View_List {
 	function get_columns() {
 		return array(
 			'cb' => '<input type="checkbox" />', //Render a checkbox instead of text
-			'name' => __('Name'),
-			'slug' => __('Slug'),		   
-			'description ' => __('Description')
+			'name' => 'Name',
+			'slug' => 'Slug',		   
+			'description ' => 'Description'
 		);
 	}
 
@@ -42,16 +42,17 @@ class View_List_Gallery extends CRUD_View_List {
 		//Build row actions
 		$actions = array(
 			'edit'      => '<a href="?page='.$_REQUEST['page'].'&action=edit&id='.$item['id'].'">Edit</a>',
-			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&id='.$item['id'].'">Delete</a>'
+			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&'.$this->_args['singular'].'='.$item['id'].'">Delete</a>'
 		);
 
 		//Return the title contents
 		return $item['name'].' '.$this->row_actions($actions);
 	}	
-/*	
+
 	function get_bulk_actions() {
 		$actions = array(
-			'delete'    => 'Delete'
+			'delete'    => 'Delete',
+			'save' => 'Save'
 		);
 		return $actions;
 	}	
@@ -60,8 +61,15 @@ class View_List_Gallery extends CRUD_View_List {
 
 		//Detect when a bulk action is being triggered...
 		if( 'delete'===$this->current_action() ) {
-			wp_die('Items deleted (or they would be if we had items to delete)!');
+			
+			global $wpdb;
+			$wpdb->delete('xb_spg_galleries', array(
+				'id' => $_GET['id']
+			));
+//			wp_die('Items deleted (or they would be if we had items to delete)!');
 		}
+		else if( 'save'===$this->current_action() ) {
+			var_dump($_GET['gallery']);
+		} 
 	}
-*/
 }

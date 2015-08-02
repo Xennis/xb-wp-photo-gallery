@@ -31,9 +31,30 @@ abstract class CRUD_Table_Horizontal extends WP_List_Table {
 	}
 	
 	function column_cb($item){
-		return '<input type="checkbox" name="'.$this->_args['singular'].'" value="'.$item['id'].'" />';
+        return sprintf(
+            '<input type="checkbox" name="%1$s[]" value="%2$s" />',
+            /*$1%s*/ $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
+            /*$2%s*/ $item['id']                //The value of the checkbox should be the record's id
+        );
 	}
+/*
+function display_tablenav( $which ) 
+{
+    ?>
+    <div class="tablenav <?php echo esc_attr( $which ); ?>">
 
+        <div class="alignleft actions">
+            <?php $this->bulk_actions(); ?>
+        </div>
+        <?php
+        $this->extra_tablenav( $which );
+        $this->pagination( $which );
+        ?>
+        <br class="clear" />
+    </div>
+    <?php
+}	
+*/	
 	function prepare_items() {
 		global $wpdb;
 
@@ -49,7 +70,8 @@ abstract class CRUD_Table_Horizontal extends WP_List_Table {
 		//Number of elements in your table?
 		$total_items = $wpdb->query($query); //return the total number of affected rows
 		//Which page is this?
-		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';
+		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';		
+//		$paged = !empty($_GET["paged"]) ? $_GET["paged"] : '';		
 		//Page Number
 		if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }
 		//adjust the query to take pagination into account
@@ -57,14 +79,6 @@ abstract class CRUD_Table_Horizontal extends WP_List_Table {
 			$offset=($paged-1)*$this->per_page;
 			$query.=' LIMIT '.(int)$offset.','.(int)$this->per_page;
 		}
-			
-		// Register the pagination
-		$current_page = $this->get_pagenum();
-		$this->set_pagination_args( array(
-			'total_items' => $total_items,
-			'total_pages' => ceil($total_items/$this->per_page),
-			'per_page' => $this->per_page,
-		) );
 
 		// Register the columns
 		$columns = $this->get_columns();
@@ -77,5 +91,13 @@ abstract class CRUD_Table_Horizontal extends WP_List_Table {
 		
 		// Fetch item
 		$this->items = $wpdb->get_results($query, 'ARRAY_A');
+			
+		// Register the pagination
+		$current_page = $this->get_pagenum();
+		$this->set_pagination_args( array(
+			'total_items' => $total_items,
+			'total_pages' => ceil($total_items/$this->per_page),
+			'per_page' => $this->per_page,
+		) );		
 	}
 }

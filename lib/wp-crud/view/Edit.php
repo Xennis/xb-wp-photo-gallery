@@ -85,7 +85,7 @@ class CRUD_View_Edit {
 	public function display() {
 		?>
 <div class="wrap">
-	<h2><?php echo ucfirst($this->model); ?><a href="?page=spg-<?php echo $this->model; ?>&action=edit" class="add-new-h2">Add new</a></h2>
+	<h2><?php echo ucfirst($this->model); ?><a href="?page=<?php echo $_REQUEST['page'] ?>&action=edit" class="add-new-h2">Add new</a></h2>
 	<form action="?page=spg-<?php echo $this->model; ?>&action=edit&id=<?php echo $this->id; ?>" method="post">
 		<table class="<?php echo $this->cssClass; ?>">
 			<thead>
