@@ -1,5 +1,5 @@
 <?php
-class Gallery_List_Table extends Simple_WP_List_Table {
+class View_List_Gallery extends CRUD_View_List {
 	
 	/**
 	* Constructor, we override the parent to pass our own arguments
@@ -41,8 +41,8 @@ class Gallery_List_Table extends Simple_WP_List_Table {
 
 		//Build row actions
 		$actions = array(
-			'edit'      => '<a href="?page='.$_REQUEST['page'].'&action=edit&gallery='.$item['id'].'">Edit</a>',
-			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&gallery='.$item['id'].'">Delete</a>'
+			'edit'      => '<a href="?page='.$_REQUEST['page'].'&action=edit&id='.$item['id'].'">Edit</a>',
+			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&id='.$item['id'].'">Delete</a>'
 		);
 
 		//Return the title contents

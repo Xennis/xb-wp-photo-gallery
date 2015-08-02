@@ -14,17 +14,29 @@ add_action('admin_menu', 'spg_admin_menu');
 /**
  * Page galleries
  */
-function spg_page_galleries() {
-	require_once(SPG_DIR . '/src/list/table/common.php');
-	require_once(SPG_DIR . '/src/list/table/gallery.php');
-	$listTable = new Gallery_List_Table();
-	$listTable->prepare_items();
-?>
-<div class="wrap">
-	<?php wp_helper_getPageTitleAddNew('Galleries'); ?>
-	<?php $listTable->display(); ?>
-</div>
-<?php
+function spg_page_galleries() {	
+	require_once(SPG_DIR . '/lib/wp-crud/form/Field.php');
+
+	$action = $_GET['action'];
+	switch ($action) {
+		case 'edit':
+			require_once(SPG_DIR . '/lib/wp-crud/view/Edit.php');
+			$view = (new CRUD_View_Edit('galleries'))
+				->setFields(array(
+					new CRUD_Form_Field('name', 'Name', TRUE),
+					new CRUD_Form_Field('slug', 'Slug', TRUE),
+					new CRUD_Form_Field('description', 'Description', FALSE, NULL, 'text'),			
+				) )
+				->display();
+			break;
+		default:
+			require_once(SPG_DIR . '/lib/wp-crud/table/Horizontal.php');
+			require_once(SPG_DIR . '/lib/wp-crud/view/List.php');
+			require_once(SPG_DIR . '/src/view/list/Gallery.php');
+			$view = new View_List_Gallery();
+			$view->display();
+			break;
+	}
 }
 
 /**

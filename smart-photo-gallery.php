@@ -22,8 +22,8 @@ require_once(SPG_DIR.'/src/helper.php');
  * Register activation hook 
  */
 function spg_register_activation() {
-	require_once(SPG_DIR . '/src/config/Db.php');
-	SPG_Config_Db::__setup_database_tables();
+	//require_once(SPG_DIR . '/src/config/Db.php');
+	//SPG_Config_Db::__setup_database_tables();
 }
 register_activation_hook( __FILE__, 'spg_register_activation' );
 
@@ -42,6 +42,19 @@ register_activation_hook( __FILE__, 'spg_register_activation' );
 //}
 //add_action('wp_enqueue_scripts', 'spg_enqueue_scripts');
 
+	/*
+ * Admin notices hook
+ */
+add_action('admin_notices', 'spg_admin_notices');
+function spg_admin_notices() {
+  if ($notices = get_option('spg_deferred_admin_notices')) {
+    foreach ($notices as $notice) {
+      echo "<div class='updated'><p>$notice</p></div>";
+    }
+    delete_option('spg_deferred_admin_notices');
+  }
+}
+	
 /*
  * Include scripts
  */

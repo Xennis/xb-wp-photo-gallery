@@ -11,7 +11,7 @@ if(!class_exists('WP_List_Table')){
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-abstract class Simple_WP_List_Table extends WP_List_Table {
+abstract class CRUD_Table_Horizontal extends WP_List_Table {
 	
 	private $per_page = 5;
 	
@@ -38,7 +38,7 @@ abstract class Simple_WP_List_Table extends WP_List_Table {
 		global $wpdb;
 
 		/* -- Preparing your query -- */
-		$query = "SELECT * FROM xb_spg_gallery";
+		$query = "SELECT * FROM xb_spg_galleries";
 
 		/* -- Ordering parameters -- */
 		$orderby = !empty($_GET["orderby"]) ? mysql_real_escape_string($_GET["orderby"]) : 'ASC';
@@ -77,14 +77,5 @@ abstract class Simple_WP_List_Table extends WP_List_Table {
 		
 		// Fetch item
 		$this->items = $wpdb->get_results($query, 'ARRAY_A');
-	}
-	
-	function display() {
-		?>
-		<form method="get">
-			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
-			<?php parent::display(); ?>
-		</form>
-		<?php
 	}
 }
