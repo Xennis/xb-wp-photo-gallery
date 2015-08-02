@@ -1,0 +1,7 @@
+{
+  "name": "wp-plugin-smart-photo-gallery",
+  "description": "",
+  "dependencies": {
+	  "dropzone": "~4.0.x"
+  }
+}

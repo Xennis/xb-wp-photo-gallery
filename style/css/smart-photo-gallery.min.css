@@ -1,0 +1,16 @@
+/* ------------------ Overwrite Dropzone.js style ----------------------------*/
+.dropzone {
+	border: 4px dashed rgb(0, 115, 170);
+	background: none;
+	height: 200px;
+	margin-top: 20px;
+}
+
+.dropzone .dz-message {
+	font-size: 25px;
+	color: #a0a5aa;
+}
+
+.dropzone .dz-preview.dz-image-preview {
+	background-color: transparent;
+}
