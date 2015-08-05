@@ -1,5 +1,5 @@
 <?php
-class View_List_Gallery extends CRUD_View_List {
+class View_Page_Galleries extends CRUD_Table_Horizontal {
 	
 	/**
 	* Constructor, we override the parent to pass our own arguments
@@ -41,7 +41,7 @@ class View_List_Gallery extends CRUD_View_List {
 
 		//Build row actions
 		$actions = array(
-			'edit'      => '<a href="?page='.$_REQUEST['page'].'&action=edit&id='.$item['id'].'">Edit</a>',
+			'edit'      => '<a href="?page=spg-gallery&tab=options&id='.$item['id'].'">Edit</a>',
 			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&'.$this->_args['singular'].'='.$item['id'].'">Delete</a>'
 		);
 
@@ -72,4 +72,17 @@ class View_List_Gallery extends CRUD_View_List {
 			var_dump($_GET['gallery']);
 		} 
 	}
+	
+	function display() {
+		parent::prepare_items();
+		?>
+	<div class="wrap">
+		<?php wp_helper_getPageTitleAddNew('Galleries', '?page=spg-gallery&tab=options'); ?>
+		<form method="get">
+			<input type="hidden" name="page" value="<?php echo $_REQUEST['page'] ?>" />
+			<?php parent::display(); ?>
+		</form>	
+	</div>
+		<?php
+	}	
 }
