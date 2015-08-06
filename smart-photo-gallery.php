@@ -28,9 +28,9 @@ function spg_register_activation() {
 register_activation_hook( __FILE__, 'spg_register_activation' );
 
 /**
- * Enqueue scripts and styles.
+ * Admin enqueue scripts and styles.
  */
-//function spg_enqueue_scripts() {
+function spg_admin_enqueue_scripts() {
 
 	// Style
 //	wp_enqueue_style('spg-dropzone-basic', spg_helper_getBowerResource('/dropzone/dist/basic.css'));
@@ -39,8 +39,10 @@ register_activation_hook( __FILE__, 'spg_register_activation' );
 
 	// Script
     wp_enqueue_script('spg-dropzone', spg_helper_getBowerResource('/dropzone/dist/dropzone.js'));
-//}
-//add_action('wp_enqueue_scripts', 'spg_enqueue_scripts');
+    wp_enqueue_script(SPG_NAME, plugins_url('/js/main.js', __FILE__), array('jquery-ui-sortable'));
+
+}
+add_action('admin_enqueue_scripts', 'spg_admin_enqueue_scripts');
 
 	/*
  * Admin notices hook

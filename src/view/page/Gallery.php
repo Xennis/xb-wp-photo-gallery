@@ -60,7 +60,7 @@ class View_Page_Gallery {
 		$tabs['options'] = __('Options', SPG_NAME);
 	?>
 	<div class="wrap">
-		<?php wp_helper_getPageTitleAddNew('Gallery #'.$this->id, '?page=spg-gallery&tab=options', __('Add new gallery', SPG_NAME)); ?>
+		<?php wp_helper_getPageTitleAddNew('Gallery '.$this->gallery->name); ?>
 		<?php echo spg_helper_admin_tabs($this->page, $tabs, $this->tab); ?>
 		<?php
 		switch ($this->tab) {
@@ -83,10 +83,26 @@ class View_Page_Gallery {
 	 * Tab home
 	 */
 	private function tabHome() {
-		require_once(SPG_DIR . '/lib/wp-crud/table/Horizontal.php');
-		require_once(SPG_DIR.'/src/view/table/View_Table_Photos.php');
-		$view = new View_Table_Photos($this->id, $this->gallery->slug);
-		$view->display();
+		global $wpdb;
+		$query = $wpdb->get_results("SELECT * FROM ".self::TABLE_PHOTOS." WHERE gallery=".$this->id);
+		
+		$upload_dir = wp_upload_dir();
+		$galleryPath = $upload_dir['baseurl'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
+?>
+<div class="spg-photozone sort">
+	<?php
+	foreach ($query as $item) {
+		?>
+		<div class="photo">
+			<img src="<?php echo $galleryPath.$item->file; ?>">
+			<textarea><?php echo $item->description; ?></textarea>
+			<div class="options"><span class="dashicons dashicons-location"></span></div>
+		</div>
+		<?php
+	}
+	?>
+</div>
+<?php
 	}
 
 	/**

@@ -1,6 +1,9 @@
 <?php
-function wp_helper_getPageTitleAddNew($title, $link, $linkText = 'Add new') {
-	echo '<h2>'.$title.'<a href="'.$link.'" class="add-new-h2">'.$linkText.'</a></h2>';
+function wp_helper_getPageTitleAddNew($title, $link = NULL, $linkText = 'Add new') {
+	if ($link) {
+		$link = '<a href="'.$link.'" class="add-new-h2">'.$linkText.'</a>';
+	}
+	echo '<h2>'.$title.' '.$link.'</h2>';
 }
 
 /**
