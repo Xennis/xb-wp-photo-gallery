@@ -46,16 +46,15 @@ class View_Page_Galleries extends CRUD_Table_Horizontal {
 		);
 
 		//Return the title contents
-		return $item['name'].' '.$this->row_actions($actions);
+		return '<a href="?page=spg-gallery&id='.$item['id'].'">'.$item['name'].'</a> '.$this->row_actions($actions);
 	}	
 
 	function get_bulk_actions() {
 		$actions = array(
-			'delete'    => 'Delete',
-			'save' => 'Save'
+			'delete' => 'Delete',
 		);
 		return $actions;
-	}	
+	}
 	
 	function process_bulk_action() {
 
@@ -67,9 +66,6 @@ class View_Page_Galleries extends CRUD_Table_Horizontal {
 				'id' => $_GET['id']
 			));
 //			wp_die('Items deleted (or they would be if we had items to delete)!');
-		}
-		else if( 'save'===$this->current_action() ) {
-			var_dump($_GET['gallery']);
 		} 
 	}
 	

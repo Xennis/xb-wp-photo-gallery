@@ -55,22 +55,25 @@ function display_tablenav( $which )
     <?php
 }	
 */	
-	function prepare_items() {
+	function prepare_items($whereCondition = NULL) {
 		global $wpdb;
 
 		/* -- Preparing your query -- */
-		$query = "SELECT * FROM xb_spg_galleries";
-
+		$query = "SELECT * FROM xb_spg_".$this->_args['plural'];
+		if ($whereCondition) {
+			$query .= ' WHERE '.$whereCondition;
+		}
+		
 		/* -- Ordering parameters -- */
-		$orderby = !empty($_GET["orderby"]) ? mysql_real_escape_string($_GET["orderby"]) : 'ASC';
-		$order = !empty($_GET["order"]) ? mysql_real_escape_string($_GET["order"]) : '';
+		$orderby = !empty($_GET["orderby"]) ? addslashes($_GET["orderby"]) : 'ASC';
+		$order = !empty($_GET["order"]) ? addslashes($_GET["order"]) : '';
 		if(!empty($orderby) & !empty($order)){ $query.=' ORDER BY '.$orderby.' '.$order; }
 
 		/* -- Pagination parameters -- */
 		//Number of elements in your table?
 		$total_items = $wpdb->query($query); //return the total number of affected rows
 		//Which page is this?
-		$paged = !empty($_GET["paged"]) ? mysql_real_escape_string($_GET["paged"]) : '';		
+		$paged = !empty($_GET["paged"]) ? addslashes($_GET["paged"]) : '';		
 //		$paged = !empty($_GET["paged"]) ? $_GET["paged"] : '';		
 		//Page Number
 		if(empty($paged) || !is_numeric($paged) || $paged<=0 ){ $paged=1; }

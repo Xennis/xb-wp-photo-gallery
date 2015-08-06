@@ -3,18 +3,29 @@ class View_Page_Gallery {
 	
 	private $id;
 	private $tab = 'home';
+	private $gallery;
+	private $page;
+	
+	const TABLE = 'xb_spg_galleries';
+	const TABLE_PHOTOS = 'xb_spg_photos';
 	
 	function __construct() {
 		$this->id = is_numeric($_GET['id']) ? $_GET['id'] : NULL;
+		if (isset($this->id)) {
+			global $wpdb;
+			$this->gallery = $wpdb->get_row("SELECT * FROM ".self::TABLE." WHERE id = ".$this->id);
+		}
+		
 		if ( isset ( $_GET['tab'] ) ) {
 			$this->tab = $_GET['tab'];
 		}
 		
 		$data = stripslashes_deep($_POST['data']);
 		if (!empty($data)) {
-			$this->table = 'xb_spg_galleries';
 			$this->updateData($data);
 		}
+		
+		$this->page = '?page='.$_GET['page'].'&id='.$this->id;
 	}
 	
 	private function updateData($data) {
@@ -22,11 +33,11 @@ class View_Page_Gallery {
 
 		$id = $_POST['data_id'];
 		if (isset($id)) {
-	        $result = $wpdb->update($this->table, $data, array(
+	        $result = $wpdb->update(self::TABLE, $data, array(
 				'id' => $id
 			));
 		} else {
-			$result = $wpdb->insert($this->table, $data);
+			$result = $wpdb->insert(self::TABLE, $data);
 			if ($result) {
 				$this->id = $wpdb->insert_id;
 				$this->tab = 'addPhotos';
@@ -50,7 +61,7 @@ class View_Page_Gallery {
 	?>
 	<div class="wrap">
 		<?php wp_helper_getPageTitleAddNew('Gallery #'.$this->id, '?page=spg-gallery&tab=options', __('Add new gallery', SPG_NAME)); ?>
-		<?php echo spg_helper_admin_tabs($_GET['page'].'&id='.$this->id, $tabs, $this->tab); ?>
+		<?php echo spg_helper_admin_tabs($this->page, $tabs, $this->tab); ?>
 		<?php
 		switch ($this->tab) {
 			case 'addPhotos':
@@ -72,7 +83,10 @@ class View_Page_Gallery {
 	 * Tab home
 	 */
 	private function tabHome() {
-		echo "TODO";		
+		require_once(SPG_DIR . '/lib/wp-crud/table/Horizontal.php');
+		require_once(SPG_DIR.'/src/view/table/View_Table_Photos.php');
+		$view = new View_Table_Photos($this->id, $this->gallery->slug);
+		$view->display();
 	}
 
 	/**
@@ -80,17 +94,43 @@ class View_Page_Gallery {
 	 */
 	private function tabAddPhotos() {
 		$upload_dir = wp_upload_dir();
-		$upload_path = $upload_dir['path'] . DIRECTORY_SEPARATOR;
-		$resultUpload = spg_helper_uploadFiles($upload_path);
+		$upload_path = $upload_dir['basedir'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
+		if (!file_exists($upload_path)) {
+			mkdir ($upload_path, 0755, true);
+		}
+		$resultUpload = $this->tabAddPhotos_uploadFiles($upload_path);
 
 	?>
-		<form method="POST" enctype="multipart/form-data" action="admin.php?page=spg-upload" class="dropzone">
+		<form method="POST" enctype="multipart/form-data" action="<?php echo $this->page; ?>&tab=addPhotos" class="dropzone">
 			<div class="fallback">
 				<input name="file" type="file" multiple /> 
 			</div>
 		</form>
 		<p class="max-upload-size"><?php printf( __( 'Maximum upload file size: %s.' ), esc_html( size_format( wp_max_upload_size() ) ) ); ?></p>
 	<?php
+	}
+	
+	/**
+	 * 
+	 * @param string $upload_path
+	 * @return boolean True, if upload was successful
+     */
+	private function tabAddPhotos_uploadFiles($upload_path) {
+		if (!empty($_FILES)) { 	
+			$tempFile = $_FILES['file']['tmp_name'];//this is temporary server location
+	
+			// Adding timestamp with image's name so that files with same name can be uploaded easily.
+			$targetFile = $upload_path . $_FILES['file']['name'];
+
+			global $wpdb;
+			$wpdb->insert(self::TABLE_PHOTOS, array(
+				'file' => $_FILES['file']['name'],
+				'gallery' => $this->id
+			));
+			 
+			return move_uploaded_file($tempFile, $targetFile);
+		}
+		return FALSE;	
 	}
 	
 	/**
@@ -104,7 +144,7 @@ class View_Page_Gallery {
 				new CRUD_Form_Field('slug', 'Slug', TRUE),
 				new CRUD_Form_Field('description', 'Description', FALSE, NULL, 'text'),			
 			) )
-		->display('?page='.$_GET['page'].'&id='.$this->id);		
+		->display($this->page);		
 	}
 	
 

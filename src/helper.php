@@ -18,24 +18,6 @@ function spg_helper_getBowerResource($path) {
 
 /**
  * 
- * @param string $upload_path
- * @return boolean True, if upload was successful
- */
-function spg_helper_uploadFiles($upload_path) {
-	if (!empty($_FILES)) { 	
-		 $tempFile = $_FILES['file']['tmp_name'];//this is temporary server location
-
-		 // Adding timestamp with image's name so that files with same name can be uploaded easily.
-		 //$mainFile = $uploadPath.time().'-'. $_FILES['file']['name'];
-		 $targetFile = $upload_path . $_FILES['file']['name'];
-
-		 return move_uploaded_file($tempFile, $targetFile);
-	}
-	return FALSE;
-}
-
-/**
- * 
  * @category helper
  * 
  * @param string $page Page, i.e. value from the URL page attribute
@@ -46,7 +28,7 @@ function spg_helper_admin_tabs($page, array $tabs, $current = NULL){
     echo '<h2 class="nav-tab-wrapper">';
     foreach($tabs as $anchor => $name){
 		$class = ($anchor == $current) ? ' nav-tab-active' : '';
-       echo '<a class="nav-tab'.$class.'" href="?page='.$page.'&tab='.$anchor.'">'.$name.'</a>';
+       echo '<a class="nav-tab'.$class.'" href="'.$page.'&tab='.$anchor.'">'.$name.'</a>';
     }
     echo '</h2>';
 }

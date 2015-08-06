@@ -24,6 +24,15 @@ abstract class SPG_Config_Db {
 			`slug` varchar(40) NOT NULL,
 			PRIMARY KEY (`id`),
 			UNIQUE KEY `slug` (`slug`)		
-		");	
+		");
+		
+		self::createTable('photos', "
+			`id` int(10) NOT NULL AUTO_INCREMENT,
+			`file` varchar(50) NOT NULL,
+			`title` varchar(80) NOT NULL,
+			`description` text NOT NULL,
+			`gallery` tinyint(2) NOT NULL,
+			PRIMARY KEY (`id`)
+		");
 	}
 }
