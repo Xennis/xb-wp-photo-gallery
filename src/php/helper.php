@@ -7,19 +7,6 @@ function wp_helper_getPageTitleAddNew($title, $link = NULL, $linkText = 'Add new
 }
 
 /**
- * Helper function, which returns the absolute URL of the given resource in the
- * Bower folder.
- * 
- * @category Helper
- * 
- * @param string $path Path relative to the Bower folder
- * @return string Absolute path of the resource
- */
-function spg_helper_getBowerResource($path) {
-	return plugins_url('../js/bower_components'.$path, __FILE__);
-}
-
-/**
  * 
  * @category helper
  * 

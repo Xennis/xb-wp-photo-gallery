@@ -16,13 +16,13 @@ define('SPG_NAME', dirname(plugin_basename( __FILE__ )));
  * Plugin directory 
  */
 define('SPG_DIR', WP_PLUGIN_DIR.'/'.SPG_NAME);
-require_once(SPG_DIR.'/src/helper.php');
+require_once(SPG_DIR.'/src/php/helper.php');
 
 /**
  * Register activation hook 
  */
 function spg_register_activation() {
-	//require_once(SPG_DIR . '/src/config/Db.php');
+	//require_once(SPG_DIR . '/src/php/config/Db.php');
 	//SPG_Config_Db::__setup_database_tables();
 }
 register_activation_hook( __FILE__, 'spg_register_activation' );
@@ -31,16 +31,8 @@ register_activation_hook( __FILE__, 'spg_register_activation' );
  * Admin enqueue scripts and styles.
  */
 function spg_admin_enqueue_scripts() {
-
-	// Style
-//	wp_enqueue_style('spg-dropzone-basic', spg_helper_getBowerResource('/dropzone/dist/basic.css'));
-    wp_enqueue_style('spg-dropzone', spg_helper_getBowerResource('/dropzone/dist/dropzone.css'));
-    wp_enqueue_style(SPG_NAME, plugins_url('/style/css/smart-photo-gallery.min.css', __FILE__));
-
-	// Script
-    wp_enqueue_script('spg-dropzone', spg_helper_getBowerResource('/dropzone/dist/dropzone.js'));
-    wp_enqueue_script(SPG_NAME, plugins_url('/js/main.js', __FILE__), array('jquery-ui-sortable'));
-
+    wp_enqueue_style(SPG_NAME, plugins_url('/dist/'.SPG_NAME.'.min.css', __FILE__));
+    wp_enqueue_script(SPG_NAME, plugins_url('/dist/'.SPG_NAME.'.js', __FILE__), array('jquery-ui-sortable'));
 }
 add_action('admin_enqueue_scripts', 'spg_admin_enqueue_scripts');
 

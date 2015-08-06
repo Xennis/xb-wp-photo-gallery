@@ -2,8 +2,12 @@
 # Local and temporary files
 ###########
 
-# Bower directory
+config.deploy.js
+dist/
+
+# Node and Bower directories
 bower_components/
+node_modules/
 
 ###########
 # IDE

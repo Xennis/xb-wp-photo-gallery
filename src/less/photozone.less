@@ -1,0 +1,38 @@
+@item-width: 300px;
+
+.spg-photozone {
+	margin-top: calc(20px - 4px);
+	
+	.photo {
+		display: inline-block;
+		width: @item-width;
+		border: 1px solid #cccccc;
+		margin: 5px;
+		background: rgb(241, 241, 241);
+		
+		img {
+			width: @item-width;
+		}
+		
+		textarea {
+			width: @item-width;
+			height: 80px;
+			padding: 0px;
+			border: 0px;
+		}
+		
+		.options {
+			margin: 4px;
+		}
+	}
+	
+	.dashicons:hover {
+		background: #666666;
+	}
+	
+	input[type="submit"] {
+		position: absolute;
+		right: 30px;
+		top: 55px;
+	}
+}

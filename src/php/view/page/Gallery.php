@@ -57,7 +57,7 @@ class View_Page_Gallery {
 			$tabs['home'] = __('Home', SPG_NAME);
 			$tabs['addPhotos'] = __('Add photos', SPG_NAME);
 		}
-		$tabs['options'] = __('Options', SPG_NAME);
+		$tabs['settings'] = __('Settings', SPG_NAME);
 	?>
 	<div class="wrap">
 		<?php wp_helper_getPageTitleAddNew('Gallery '.$this->gallery->name); ?>
@@ -67,8 +67,8 @@ class View_Page_Gallery {
 			case 'addPhotos':
 				$this->tabAddPhotos();
 				break;
-			case 'options':
-				$this->tabOptions();
+			case 'settings':
+				$this->tabSettings();
 				break;
 			default:
 				$this->tabHome();
@@ -89,20 +89,29 @@ class View_Page_Gallery {
 		$upload_dir = wp_upload_dir();
 		$galleryPath = $upload_dir['baseurl'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
 ?>
-<div class="spg-photozone sort">
+<form method="POST" action="">
+	<div class="spg-photozone sortable">
 	<?php
 	foreach ($query as $item) {
 		?>
 		<div class="photo">
 			<img src="<?php echo $galleryPath.$item->file; ?>">
-			<textarea><?php echo $item->description; ?></textarea>
+			<textarea name="data[<?php echo $item->id; ?>][description]"><?php echo $item->description; ?></textarea>
 			<div class="options"><span class="dashicons dashicons-location"></span></div>
+			<input
+				type="hidden"
+				name="data[<?php echo $item->id; ?>][order]"
+				class="order"
+				value="">
 		</div>
 		<?php
 	}
 	?>
-</div>
-<?php
+	<?php submit_button(); ?>
+	</div>
+</form>
+
+	<?php
 	}
 
 	/**
@@ -152,7 +161,7 @@ class View_Page_Gallery {
 	/**
      * Tab options
   	 */
-	private function tabOptions() {
+	private function tabSettings() {
 		require_once(SPG_DIR . '/lib/wp-crud/view/Edit.php');
 		$view = (new CRUD_View_Edit('galleries', $this->id))
 			->setFields(array(

@@ -41,7 +41,7 @@ class View_Page_Galleries extends CRUD_Table_Horizontal {
 
 		//Build row actions
 		$actions = array(
-			'edit'      => '<a href="?page=spg-gallery&tab=options&id='.$item['id'].'">Edit</a>',
+			'settings'      => '<a href="?page=spg-gallery&tab=settings&id='.$item['id'].'">Settings</a>',
 			'delete'    => '<a href="?page='.$_REQUEST['page'].'&action=delete&'.$this->_args['singular'].'='.$item['id'].'">Delete</a>'
 		);
 
