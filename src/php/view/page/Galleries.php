@@ -1,5 +1,5 @@
 <?php
-class View_Page_Galleries extends CRUD_Table_Horizontal {
+class View_Page_Galleries extends WPLDK_Table_List {
 	
 	/**
 	* Constructor, we override the parent to pass our own arguments

@@ -16,6 +16,11 @@ define('SPG_NAME', dirname(plugin_basename( __FILE__ )));
  * Plugin directory 
  */
 define('SPG_DIR', WP_PLUGIN_DIR.'/'.SPG_NAME);
+/**
+ * WordPress Lightweight Develop Kit directory
+ */
+define('WPLDK_DIR', SPG_DIR.'/lib/wpldk');
+
 require_once(SPG_DIR.'/src/php/helper.php');
 
 /**

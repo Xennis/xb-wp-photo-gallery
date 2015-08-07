@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Admin menu hook: Add pages to menu.
  */
@@ -16,8 +17,9 @@ add_action('admin_menu', 'spg_admin_menu');
  * Page galleries
  */
 function spg_page_galleries() {	
-	require_once(SPG_DIR . '/lib/wp-crud/form/Field.php');
-	require_once(SPG_DIR . '/lib/wp-crud/table/Horizontal.php');
+	require_once(WPLDK_DIR.'/Form/Field.php');
+	require_once(WPLDK_DIR.'/Table/List.php');
+	
 	require_once(SPG_DIR . '/src/php/view/page/Galleries.php');
 	$view = new View_Page_Galleries();
 	$view->display();	
@@ -27,7 +29,9 @@ function spg_page_galleries() {
  * Page gallery
  */
 function spg_page_gallery() {
-	require_once(SPG_DIR . '/lib/wp-crud/form/Field.php');	
+	require_once(WPLDK_DIR . '/Form/Field.php');	
+	require_once(WPLDK_DIR . '/Database/Model.php');
+	
 	require_once(SPG_DIR . '/src/php/view/page/Gallery.php');
 	$view = new View_Page_Gallery();
 	$view->display();

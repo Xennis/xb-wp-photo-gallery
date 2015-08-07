@@ -1,45 +1,59 @@
 <?php
 class View_Page_Gallery {
 	
+	const TABLE = 'galleries';
+	const TABLE_PHOTOS = 'photos';
+	
+	const FORM_HOME_DATA = 'photos';
+	
 	private $id;
 	private $tab = 'home';
 	private $gallery;
-	private $page;
+	private $page;	
 	
-	const TABLE = 'xb_spg_galleries';
-	const TABLE_PHOTOS = 'xb_spg_photos';
+	private $modelPhotos;
+	private $modelGalleries;
 	
 	function __construct() {
 		$this->id = is_numeric($_GET['id']) ? $_GET['id'] : NULL;
+		$this->page = '?page='.$_GET['page'].'&id='.$this->id;
+		
+		$this->modelGalleries = new WPLDK_Database_Model(self::TABLE); 
+		$this->modelPhotos = new WPLDK_Database_Model(self::TABLE_PHOTOS);
+		
 		if (isset($this->id)) {
-			global $wpdb;
-			$this->gallery = $wpdb->get_row("SELECT * FROM ".self::TABLE." WHERE id = ".$this->id);
+			$this->gallery = $this->modelGalleries->get($this->id);
 		}
 		
 		if ( isset ( $_GET['tab'] ) ) {
 			$this->tab = $_GET['tab'];
 		}
 		
+		// Update settings
 		$data = stripslashes_deep($_POST['data']);
 		if (!empty($data)) {
-			$this->updateData($data);
+			$this->updateSettings($data);
 		}
 		
-		$this->page = '?page='.$_GET['page'].'&id='.$this->id;
+		// Update photos
+		$photosData = $_POST[self::FORM_HOME_DATA];
+		if (!empty($photosData)) {
+			$this->updatePhotos($photosData);
+		}		
 	}
 	
-	private function updateData($data) {
+	private function updateSettings($data) {
 		global $wpdb;
 
 		$id = $_POST['data_id'];
+		
 		if (isset($id)) {
-	        $result = $wpdb->update(self::TABLE, $data, array(
-				'id' => $id
-			));
+			$result = $this->modelGalleries->update($data, $id);
 		} else {
-			$result = $wpdb->insert(self::TABLE, $data);
-			if ($result) {
-				$this->id = $wpdb->insert_id;
+			$insertId = $this->modelGalleries->insert($data);
+			if (is_int($insertId)) {
+				$result = TRUE;
+				$this->id = $insertId;
 				$this->tab = 'addPhotos';
 			}
 		}
@@ -49,7 +63,22 @@ class View_Page_Gallery {
 			$notices[]= "Saved";
 			update_option('spg_deferred_admin_notices', $notices);	
 		}
-	}	
+	}
+	
+	private function updatePhotos($data) {
+		var_dump($data);
+		$result = $this->modelPhotos->updateMultiple($data);
+		
+		if ($result === TRUE) {
+			$notices= get_option('spg_deferred_admin_notices', array());
+			$notices[]= "Saved";
+			update_option('spg_deferred_admin_notices', $notices);				
+		} else {
+			$notices= get_option('spg_deferred_admin_notices', array());
+			$notices[]= "Failed to save photos with ID ".implode(', ', $result);
+			update_option('spg_deferred_admin_notices', $notices);				
+		}
+	}
 	
 	public function display() {
 		$tabs = array();
@@ -83,8 +112,7 @@ class View_Page_Gallery {
 	 * Tab home
 	 */
 	private function tabHome() {
-		global $wpdb;
-		$query = $wpdb->get_results("SELECT * FROM ".self::TABLE_PHOTOS." WHERE gallery=".$this->id);
+		$query = $this->modelPhotos->getMultiple("gallery=".$this->id, 'sequence');
 		
 		$upload_dir = wp_upload_dir();
 		$galleryPath = $upload_dir['baseurl'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
@@ -93,16 +121,17 @@ class View_Page_Gallery {
 	<div class="spg-photozone sortable">
 	<?php
 	foreach ($query as $item) {
+		$name_prefix = self::FORM_HOME_DATA.'['.$item->id.']';
 		?>
 		<div class="photo">
 			<img src="<?php echo $galleryPath.$item->file; ?>">
-			<textarea name="data[<?php echo $item->id; ?>][description]"><?php echo $item->description; ?></textarea>
+			<textarea name="<?php echo $name_prefix; ?>[description]"><?php echo $item->description; ?></textarea>
 			<div class="options"><span class="dashicons dashicons-location"></span></div>
 			<input
-				type="hidden"
-				name="data[<?php echo $item->id; ?>][order]"
+				type="number"
+				name="<?php echo $name_prefix; ?>[sequence]"
 				class="order"
-				value="">
+				value="<?php echo $item->order; ?>">
 		</div>
 		<?php
 	}
@@ -147,27 +176,26 @@ class View_Page_Gallery {
 			// Adding timestamp with image's name so that files with same name can be uploaded easily.
 			$targetFile = $upload_path . $_FILES['file']['name'];
 
-			global $wpdb;
-			$wpdb->insert(self::TABLE_PHOTOS, array(
+			$this->modelPhotos->insert(array(
 				'file' => $_FILES['file']['name'],
 				'gallery' => $this->id
 			));
 			 
 			return move_uploaded_file($tempFile, $targetFile);
 		}
-		return FALSE;	
+		return FALSE;
 	}
 	
 	/**
      * Tab options
   	 */
 	private function tabSettings() {
-		require_once(SPG_DIR . '/lib/wp-crud/view/Edit.php');
-		$view = (new CRUD_View_Edit('galleries', $this->id))
+		require_once(WPLDK_DIR . '/View/Settings.php');
+		$view = (new WPLDK_View_Settings('galleries', $this->id))
 			->setFields(array(
-				new CRUD_Form_Field('name', 'Name', TRUE),
-				new CRUD_Form_Field('slug', 'Slug', TRUE),
-				new CRUD_Form_Field('description', 'Description', FALSE, NULL, 'text'),			
+				new WPLDK_Form_Field('name', 'Name', 'string', TRUE),
+				new WPLDK_Form_Field('slug', 'Slug', 'string', TRUE),
+				new WPLDK_Form_Field('description', 'Description', 'text', FALSE, NULL),			
 			) )
 		->display($this->page);		
 	}

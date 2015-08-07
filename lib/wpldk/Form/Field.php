@@ -5,7 +5,7 @@
  * @package back-end
  * @subpackage model
  */
-class CRUD_Form_Field {
+class WPLDK_Form_Field {
 
 	/**
 	 * Name of the field (mostly database table column)
@@ -53,7 +53,7 @@ class CRUD_Form_Field {
 	 * @param null|string $cssClass
 	 * @return MT_Admin_Field
 	 */
-	public function __construct($name, $label, $required = FALSE, $maxLength = NULL, $type = 'string', $cssClass = NULL) {
+	public function __construct($name, $label, $type = 'string', $required = FALSE, $maxLength = NULL, $cssClass = NULL) {
 		$this->name = $name;
 		$this->label = $label;
 		$this->type = $type;

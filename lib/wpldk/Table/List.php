@@ -11,7 +11,7 @@ if(!class_exists('WP_List_Table')){
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-abstract class CRUD_Table_Horizontal extends WP_List_Table {
+abstract class WPLDK_Table_List extends WP_List_Table {
 	
 	private $per_page = 5;
 	

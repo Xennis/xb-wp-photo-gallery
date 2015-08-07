@@ -11,16 +11,15 @@
  *
  * @author Fabian
  */
-class CRUD_View_Edit {
+class WPLDK_View_Settings {
 	
-	private $table;
+	const CSS_CLASS_FORM = 'form-table';
+
 	private $model;
 	private $id;
-	private $cssClass = 'form-table';
 	private $fields;
 
 	public function __construct($model, $id = NULL) {
-		$this->table = 'xb_spg_'.$model;
 		$this->model = $model;
 		$this->id = $id;
 		return $this;
@@ -31,14 +30,9 @@ class CRUD_View_Edit {
 		return $this;
 	}
 
-	private function _getData() {
-		global $wpdb;
-		return $wpdb->get_row("SELECT * FROM $this->table WHERE id = $this->id", 'ARRAY_A');
-	}
-	
 	private function _outputTableBody() {
 		if ($this->id) {
-			$data = $this->_getData();
+			$data = (new WPLDK_Database_Model($this->model))->get($this->id, WPLDK_Database_Model::OUTPUT_TYPE_ARRAY_A);
 		} else {
 			$data = array();
 		}
@@ -57,7 +51,7 @@ class CRUD_View_Edit {
 		?>
 	<form action="<?php echo $page; ?>" method="post">
 		<?php if ($this->id) echo '<input type="hidden" name="data_id" value="'.$this->id.'">'; ?>
-		<table class="<?php echo $this->cssClass; ?>">
+		<table class="<?php echo self::CSS_CLASS_FORM; ?>">
 			<tbody>
 				<?php $this->_outputTableBody(); ?>
 			</tbody>
