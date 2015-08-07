@@ -1,5 +1,5 @@
 /*global require, module, __dirname */
-var config = require('../config').deploy,
+var config = require('../config').watch,
 	path = require('path'),
 	gulp = require('gulp');
 

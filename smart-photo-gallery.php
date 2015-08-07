@@ -41,19 +41,17 @@ function spg_admin_enqueue_scripts() {
 }
 add_action('admin_enqueue_scripts', 'spg_admin_enqueue_scripts');
 
-	/*
+/*
  * Admin notices hook
  */
-add_action('admin_notices', 'spg_admin_notices');
+require_once(WPLDK_DIR.'/Helper/AdminNotice.php');
+$wpldkHelperAdminNotice = new WPLDK_Helper_AdminNotice('spg_deferred_admin_notices');
 function spg_admin_notices() {
-  if ($notices = get_option('spg_deferred_admin_notices')) {
-    foreach ($notices as $notice) {
-      echo "<div class='updated'><p>$notice</p></div>";
-    }
-    delete_option('spg_deferred_admin_notices');
-  }
+	global $wpldkHelperAdminNotice;
+	$wpldkHelperAdminNotice->hook();
 }
-	
+add_action('admin_notices', 'spg_admin_notices');
+
 /*
  * Include scripts
  */

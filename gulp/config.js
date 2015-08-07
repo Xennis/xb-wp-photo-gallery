@@ -4,14 +4,14 @@ module.exports = {
 		remoteFolder: 'wp-content/plugins/smart-photo-gallery/',
 		globs: [
 			'dist/**',
-			'lib/**',
-			'src/php/**',
-			'*.php'
+//			'lib/**',
+			'src/php/**'
 		]
 	},
 	scripts: {
 		src: [
 			'src/js/bower_components/dropzone/dist/min/dropzone.min.js',
+			'src/js/components/**/*.js',
 			'src/js/*.js'
 		],
 		dest: 'dist/',
@@ -22,6 +22,6 @@ module.exports = {
 		dest: 'dist/'
 	},
 	watch: {
-		deploy: ['src/js/*.js', 'src/less/*.less', '*.php']
+		deploy: ['src/js/**/*.js', 'src/less/*.less', 'src/php/**/*.php']
 	}
 };

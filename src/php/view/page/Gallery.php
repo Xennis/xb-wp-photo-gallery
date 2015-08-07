@@ -57,11 +57,12 @@ class View_Page_Gallery {
 				$this->tab = 'addPhotos';
 			}
 		}
-		
-		if ($result) {
-			$notices= get_option('spg_deferred_admin_notices', array());
-			$notices[]= "Saved";
-			update_option('spg_deferred_admin_notices', $notices);	
+
+		global $wpldkHelperAdminNotice;
+		if ($result === FALSE) {
+			$wpldkHelperAdminNotice->addError('Failed to save settings');			
+		} else if ($result) {
+			$wpldkHelperAdminNotice->addUpdate('Saved settings');			
 		}
 	}
 	
@@ -69,14 +70,11 @@ class View_Page_Gallery {
 		var_dump($data);
 		$result = $this->modelPhotos->updateMultiple($data);
 		
+		global $wpldkHelperAdminNotice;
 		if ($result === TRUE) {
-			$notices= get_option('spg_deferred_admin_notices', array());
-			$notices[]= "Saved";
-			update_option('spg_deferred_admin_notices', $notices);				
+			$wpldkHelperAdminNotice->addUpdate("Saved");
 		} else {
-			$notices= get_option('spg_deferred_admin_notices', array());
-			$notices[]= "Failed to save photos with ID ".implode(', ', $result);
-			update_option('spg_deferred_admin_notices', $notices);				
+			$wpldkHelperAdminNotice->addError("Failed to save photos with ID ".implode(', ', $result));
 		}
 	}
 	
@@ -119,23 +117,15 @@ class View_Page_Gallery {
 ?>
 <form method="POST" action="">
 	<div class="spg-photozone sortable">
-	<?php
-	foreach ($query as $item) {
-		$name_prefix = self::FORM_HOME_DATA.'['.$item->id.']';
-		?>
-		<div class="photo">
-			<img src="<?php echo $galleryPath.$item->file; ?>">
-			<textarea name="<?php echo $name_prefix; ?>[description]"><?php echo $item->description; ?></textarea>
-			<div class="options"><span class="dashicons dashicons-location"></span></div>
-			<input
-				type="number"
-				name="<?php echo $name_prefix; ?>[sequence]"
-				class="order"
-				value="<?php echo $item->order; ?>">
-		</div>
-		<?php
-	}
-	?>
+		<script>
+jQuery(function() {
+
+	jQuery('.spg-photozone').endlessPhotoScroll(<?php echo json_encode($query); ?>, {
+		path: '<?php echo $galleryPath; ?>',
+		name_prefix: '<?php echo self::FORM_HOME_DATA; ?>'
+	});
+});		
+		</script>
 	<?php submit_button(); ?>
 	</div>
 </form>

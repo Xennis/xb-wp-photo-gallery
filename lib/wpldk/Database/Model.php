@@ -36,8 +36,6 @@ class WPLDK_Database_Model {
 			$body .= ' ORDER BY `'.$orderBy.'`';
 		}
 		
-		echo "SELECT * FROM ".$this->table.$body;
-		
 		return $wpdb->get_results("SELECT * FROM `".$this->table.'` '.$body);
 	}
 	
@@ -65,8 +63,6 @@ class WPLDK_Database_Model {
 	 */
 	public function update(array $data, $id) {
 		global $wpdb;
-		var_dump($data);
-		echo "<br>";
 		return $wpdb->update($this->table, $data, array(
 			'id' => $id
 		));
