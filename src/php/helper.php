@@ -22,3 +22,9 @@ function spg_helper_admin_tabs($page, array $tabs, $current = NULL){
     }
     echo '</h2>';
 }
+
+function spg_helper_makeDir($dir) {
+	if (!file_exists($dir)) {
+		mkdir($dir, 0755, true);
+	}
+}

@@ -4,10 +4,12 @@
 
 config.deploy.js
 dist/
+*.lock
 
-# Node and Bower directories
+# Bower, Node and Composer directories
 bower_components/
 node_modules/
+vendor/
 
 ###########
 # IDE

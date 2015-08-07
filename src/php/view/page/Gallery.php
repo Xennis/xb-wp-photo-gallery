@@ -5,6 +5,7 @@ class View_Page_Gallery {
 	const TABLE_PHOTOS = 'photos';
 	
 	const FORM_HOME_DATA = 'photos';
+	const THUMB_DIR = 'thumb';
 	
 	private $id;
 	private $tab = 'home';
@@ -113,7 +114,7 @@ class View_Page_Gallery {
 		$query = $this->modelPhotos->getMultiple("gallery=".$this->id, 'sequence');
 		
 		$upload_dir = wp_upload_dir();
-		$galleryPath = $upload_dir['baseurl'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
+		$galleryPath = $upload_dir['baseurl'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.self::THUMB_DIR.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
 ?>
 <form method="POST" action="">
 	<div class="spg-photozone sortable">
@@ -138,11 +139,8 @@ jQuery(function() {
 	 */
 	private function tabAddPhotos() {
 		$upload_dir = wp_upload_dir();
-		$upload_path = $upload_dir['basedir'].DIRECTORY_SEPARATOR.SPG_NAME.DIRECTORY_SEPARATOR.$this->gallery->slug.DIRECTORY_SEPARATOR;
-		if (!file_exists($upload_path)) {
-			mkdir ($upload_path, 0755, true);
-		}
-		$resultUpload = $this->tabAddPhotos_uploadFiles($upload_path);
+		$upload_dir = $upload_dir['basedir'].DIRECTORY_SEPARATOR.SPG_NAME;
+		$resultUpload = $this->tabAddPhotos_uploadFiles($upload_dir);
 
 	?>
 		<form method="POST" enctype="multipart/form-data" action="<?php echo $this->page; ?>&tab=addPhotos" class="dropzone">
@@ -156,24 +154,41 @@ jQuery(function() {
 	
 	/**
 	 * 
-	 * @param string $upload_path
+	 * @param string $upload_dir
 	 * @return boolean True, if upload was successful
      */
-	private function tabAddPhotos_uploadFiles($upload_path) {
-		if (!empty($_FILES)) { 	
+	private function tabAddPhotos_uploadFiles($upload_dir) {
+		if (!empty($_FILES)) {
+			// Upload path
+			$upload_path = $upload_dir.DIRECTORY_SEPARATOR.$this->gallery->slug;
+			spg_helper_makeDir($upload_path);
+			// Thumbnail path
+			$upload_thumb_path = $upload_dir.DIRECTORY_SEPARATOR.self::THUMB_DIR.DIRECTORY_SEPARATOR.$this->gallery->slug;
+			spg_helper_makeDir($upload_thumb_path);
+			
 			$tempFile = $_FILES['file']['tmp_name'];//this is temporary server location
+			$fileName = $_FILES['file']['name'];
 	
 			// Adding timestamp with image's name so that files with same name can be uploaded easily.
-			$targetFile = $upload_path . $_FILES['file']['name'];
-
-			$this->modelPhotos->insert(array(
-				'file' => $_FILES['file']['name'],
-				'gallery' => $this->id
-			));
+			$targetFile = $upload_path.DIRECTORY_SEPARATOR.$fileName;
 			 
-			return move_uploaded_file($tempFile, $targetFile);
+			if (move_uploaded_file($tempFile, $targetFile)) {
+				$this->createThumbnail($targetFile, $upload_thumb_path.DIRECTORY_SEPARATOR.$fileName);
+				
+				$this->modelPhotos->insert(array(
+					'file' => $fileName,
+					'gallery' => $this->id
+				));
+			}
 		}
 		return FALSE;
+	}
+	
+	private function createThumbnail($file, $target) {
+		require_once(SPG_DIR.'/vendor/abeautifulsite/simpleimage/src/abeautifulsite/SimpleImage.php');
+		$img = new abeautifulsite\SimpleImage($file);
+		$img->thumbnail(250, 250)
+			->save($target, 70);
 	}
 	
 	/**
