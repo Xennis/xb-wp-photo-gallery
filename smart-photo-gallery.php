@@ -52,6 +52,16 @@ function spg_admin_notices() {
 }
 add_action('admin_notices', 'spg_admin_notices');
 
+/**
+ * 
+ * @param array $links
+ */
+function spg_plugin_action_links( $links ) {
+   $links[] = '<a href="'.admin_url('admin.php?page=spg-settings').'">Settings</a>';
+   return $links;
+}
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'spg_plugin_action_links');
+
 /*
  * Include scripts
  */

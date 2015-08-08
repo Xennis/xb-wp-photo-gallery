@@ -195,8 +195,9 @@ jQuery(function() {
      * Tab options
   	 */
 	private function tabSettings() {
-		require_once(WPLDK_DIR . '/View/Settings.php');
-		$view = (new WPLDK_View_Settings('galleries', $this->id))
+		require_once(WPLDK_DIR . '/View/Settings/Common.php');
+		require_once(WPLDK_DIR . '/View/Settings/DatabaseTable.php');
+		$view = (new WPLDK_View_Settings_DatabaseTable('galleries', $this->id))
 			->setFields(array(
 				new WPLDK_Form_Field('name', 'Name', 'string', TRUE),
 				new WPLDK_Form_Field('slug', 'Slug', 'string', TRUE),

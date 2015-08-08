@@ -44,12 +44,14 @@ class WPLDK_Form_Field {
 	 */
 	private $cssClass;
 	
+	private $textBehindField;
+	
 	/**
 	 * Create a (input) field.
 	 * 
 	 * @param string $name Name of the field
 	 * @param string $label Label of the field
-	 * @param string $type Type of the field: string|date|hidden|bool|text|reference
+	 * @param string $type Type of the field: string|hidden|bool|text
 	 * @param null|string $cssClass
 	 * @return MT_Admin_Field
 	 */
@@ -59,23 +61,29 @@ class WPLDK_Form_Field {
 		$this->type = $type;
 		$this->required = $required;
 		$this->maxLength = $maxLength;
-		$this->cssClass = $cssClass;
+		
+		if ($cssClass) {
+			$this->cssClass = $cssClass;
+		} else {
+			switch ($this->type) {
+				case 'string':
+					$this->cssClass = 'regular-text';
+					break;
+				case 'number':
+					$this->cssClass = 'small-text';
+					break;
+				case 'text':
+					$this->cssClass = 'large-text';
+					break;
+			}
+		}
+		
 		return $this;
 	}
 	
-	/**
-	 * Get the content of the field as string.
-	 * 
-	 * @param string $value Value of the field
-	 * @return string Content of the field
-	 */
-	public function getString($value) {
-		if ($this->type === self::TYPE_DATE) {
-			return date('m.d.Y, H:i', $value);
-		}
-		else {
-			return ''.$value;
-		}
+	public function setTextBehindField($text) {
+		$this->textBehindField = $text;
+		return $this;
 	}
 	
 	/**
@@ -87,7 +95,7 @@ class WPLDK_Form_Field {
 	 */
 	public function getElement($value = NULL) {
 		if ($this->disabled) {
-			return $this->getString($value);
+			return $value;
 		}
 		$arrayElement = 'data['.$this->name.']';
 
@@ -100,11 +108,18 @@ class WPLDK_Form_Field {
 		}
 		
 		switch ($this->type) {
+			case 'number':
+				$field = $this->getInputField('number', $arrayElement, $value);
+				break;
 			case 'string':
-				return $this->getInputField('text', $arrayElement, $value, 50);
+				$field = $this->getInputField('text', $arrayElement, $value, 50);
+				break;
 			case 'text':
-				return '<textarea name="'.$arrayElement.'" cols="38" rows="4" '.$attribute.'>'.$value.'</textarea>';
+				$field = '<textarea name="'.$arrayElement.'" cols="38" rows="4" '.$attribute.'>'.$value.'</textarea>';
+				break;
 		}
+		
+		return $field.' '.$this->textBehindField;
 	}
 	
 	/**

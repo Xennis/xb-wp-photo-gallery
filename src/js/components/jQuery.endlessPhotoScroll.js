@@ -7,7 +7,7 @@ console.log(data);
 		name_prefix: '',
 		path: '',
 		offset: 0,
-		limit: 8
+		limit: 20
 	}, options);
 
 	
