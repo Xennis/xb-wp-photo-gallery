@@ -19,7 +19,7 @@ define('SPG_DIR', WP_PLUGIN_DIR.'/'.SPG_NAME);
 /**
  * WordPress Lightweight Develop Kit directory
  */
-define('WPLDK_DIR', SPG_DIR.'/lib/wpldk');
+define('WPLDK_DIR', SPG_DIR.'/lib/wpldk/src');
 
 require_once(SPG_DIR.'/src/php/helper.php');
 
@@ -65,5 +65,6 @@ add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'spg_plugin_actio
 /*
  * Include scripts
  */
+require_once(SPG_DIR.'/'.SPG_NAME.'.routing.php');
 require_once(SPG_DIR.'/'.SPG_NAME.'.shortcodes.php');
 require_once(SPG_DIR.'/'.SPG_NAME.'.pages.php');

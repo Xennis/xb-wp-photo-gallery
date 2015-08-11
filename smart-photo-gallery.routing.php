@@ -1,4 +1,7 @@
 <?php
+require_once(WPLDK_DIR.'/Database/Model.php');
+require_once(SPG_DIR.'/src/php/api/Request.php');
+require_once(SPG_DIR.'/src/php/api/Response.php');
 require_once(SPG_DIR.'/src/php/api/RestServer.php');
 $spgRestServer = new SPG_Api_RestServer();
 

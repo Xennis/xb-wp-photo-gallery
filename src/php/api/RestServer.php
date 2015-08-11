@@ -24,7 +24,9 @@ class SPG_Api_RestServer {
 	
 
 	public function __construct() {
-		$this->register_route(self::ROUTE_GALLERIES, NULL);
+		$this->register_route(self::ROUTE_GALLERIES, array(
+			'method' => 'GET'
+		));
 	}	
 	
 	public function register_route($route, $args) {
@@ -32,41 +34,73 @@ class SPG_Api_RestServer {
 	}
 
 	public function serve_request( $route = null ) {
-		switch ($route) {
-			case self::ROUTE_GALLERIES:
+		
+		$request = new SPG_Api_Request($route);
+		$response = new SPG_Api_Response();
+		if ($request->getRoute() == self::ROUTE_GALLERIES) {
+			require_once SPG_DIR.'/src/php/api/model/Galleries.php';
+			$model = new SPG_Api_Model_Galleries();
+			
+			switch ($request->getMethod()) {
+				case 'GET':
+					$response->setBody($model->getList($request->getParam('path')));
+					break;
+				case 'POST':
+					$response->setStatus($model->postItem($request->getBody()));
+					break;
+			}
+		}
+		else if($this->_startsWith($request->getRoute(), self::ROUTE_GALLERIES)) {
+			require_once SPG_DIR.'/src/php/api/model/Galleries.php';
+			$model = new SPG_Api_Model_Galleries();
+			$id = $request->getRoute(1);
+			if (is_numeric($id)) {
 				
-				$a = array();
-				$a[] = 'test';
-				$a[] = 'yo';
-								http_response_code(403);
-
-				$a = $this->setBody($a);
-
+				switch ($request->getMethod()) {
+					case 'GET':
+						$response->setBody($model->getItem($id));
+						break;
+					case 'POST':
+						$response->setStatus($model->postItem($request->getBody(), $id));
+						break;
+					case 'DELETE':
+						$response->setStatus($model->deleteItem($id));
+						break;
+				}
 				
-
-				break;
-
-			default:
-				break;
+			}
 		}
 		
+		$response->execute();
 	}
 	
-	private function setHeader($param, $value) {
-		header($param.':'.$value);
+	private function _startsWith($string, $value) {
+		return 0 === strpos($string, $value);
 	}
 	
-	private function setBody($value) {
-		$this->setHeader(self::HEADER_CONTENT_TYPE, self::HEADER_CONTENT_TYPE_JSON);
-
-		echo json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);	
+	private function _getJsonError() {
+		switch (json_last_error()) {
+			case JSON_ERROR_NONE:
+				echo ' - No errors';
+			break;
+			case JSON_ERROR_DEPTH:
+				echo ' - Maximum stack depth exceeded';
+			break;
+			case JSON_ERROR_STATE_MISMATCH:
+				echo ' - Underflow or the modes mismatch';
+			break;
+			case JSON_ERROR_CTRL_CHAR:
+				echo ' - Unexpected control character found';
+			break;
+			case JSON_ERROR_SYNTAX:
+				echo ' - Syntax error, malformed JSON';
+			break;
+			case JSON_ERROR_UTF8:
+				echo ' - Malformed UTF-8 characters, possibly incorrectly encoded';
+			break;
+			default:
+				echo ' - Unknown error';
+			break;
+		}
 	}
-	
-	private function setBodyErrorMessage($message) {
-		setBody([
-			'error' => $message
-		]);
-	}
-		
-	
 }
