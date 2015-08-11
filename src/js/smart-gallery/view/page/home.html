@@ -1,1 +1,10 @@
-Hello World
+<h2>Galleries</h2>
+
+Nav: {{path}}
+
+<div class="spg-galliers-zone">
+	<div class="gallery" ng-repeat="item in galleries">
+		<h4><a ui-sref="main({ path: item.file })" href="">{{item.title}}</a></h4>
+		<p>{{item.file}}{{item.description}}</p>
+	</div>
+</div>

@@ -16,27 +16,26 @@ class WPLDK_Database_Model {
 	public function __construct($table) {
 		global $wpdb;
 		$this->table = $wpdb->prefix.self::PREFIX.$table;
-
 		return $this;
 	}
 
 	public function get($id, $output_type = self::OUTPUT_TYPE_OBJECT) {
 		global $wpdb;
-		return $wpdb->get_row("SELECT * FROM `".$this->table."` WHERE id = ".$id, $output_type);
+		return $wpdb->get_row("SELECT * FROM `{$this->table}` WHERE `id` = '{$id}'", $output_type);
 	}
 	
 	public function getMultiple($whereCondition = NULL, $orderBy = NULL) {
 		global $wpdb;
 		
-		$body = '';
+		$body = "";
 		if ($whereCondition) {
-			$body .= ' WHERE '.$whereCondition;
+			$body .= " WHERE ".$whereCondition;
 		}
 		if ($orderBy) {
-			$body .= ' ORDER BY `'.$orderBy.'`';
+			$body .= " ORDER BY `{$orderBy}`";
 		}
 		
-		return $wpdb->get_results("SELECT * FROM `".$this->table.'` '.$body);
+		return $wpdb->get_results("SELECT * FROM `{$this->table}` ".$body);
 	}
 	
 	/**

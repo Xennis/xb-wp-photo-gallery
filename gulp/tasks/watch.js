@@ -9,6 +9,6 @@ gulp.task('watch', ['serve'], function () {
 	//gulp.watch(config.serve, ['serve']);
 	
 	gulp.watch('src/less/*.less', ['styles']);
-	gulp.watch('src/js/**/*.js', ['webpack']);
-	gulp.watch(['**/*.html', 'dist/*.js'], browserSync.reload);
+	gulp.watch(['src/js/**/*.js', 'src/js/smart-gallery/**/*.html'], ['webpack']);
+	gulp.watch(['src/js/*.html', 'dist/*.js'], browserSync.reload);
 });
