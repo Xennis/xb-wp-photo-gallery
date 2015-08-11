@@ -21,11 +21,17 @@ module.exports = {
 		dest: 'dist/',
 		name: 'smart-photo-gallery.js'
 	},
+	serve: {
+		port: 4000
+	},
 	styles: {
 		src: 'src/less/smart-photo-gallery.less',
 		dest: 'dist/'
 	},
 	watch: {
-		deploy: ['src/js/**/*.js', 'src/less/*.less', 'src/php/**/*.php']
+		deploy: ['src/js/**/*.js', 'src/less/*.less', 'src/php/**/*.php'],
+	},
+	webpack: {
+		src: '../../webpack.config.js'
 	}
 };

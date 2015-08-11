@@ -2,6 +2,11 @@
   "name": "wp-plugin-smart-photo-gallery",
   "description": "",
   "dependencies": {
-	  "dropzone": "~4.0.x"
+	"angular-ui-router": "~0.2.*",
+	"dropzone": "~4.0.x",
+	"restangular": "~1.5.*"
+  },
+  "resolutions": {
+    "angular": "~1.4.x"
   }
 }

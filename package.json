@@ -18,6 +18,8 @@
 	"require-dir": "",
 	"url": "*",
 	"vinyl-ftp": "*",
-	"proxy-middleware": "*"
+	"proxy-middleware": "*",
+	"webpack": "*",
+	"html-loader": "*"
   }
 }
