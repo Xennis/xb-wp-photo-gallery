@@ -1,0 +1,7 @@
+<phpunit bootstrap="wpldk/bootstrap.php">
+    <testsuites>
+        <testsuite name="WPLD">
+            <directory>wpldk</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

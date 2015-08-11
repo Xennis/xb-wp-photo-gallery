@@ -8,6 +8,10 @@ module.exports = {
 			'src/php/**'
 		]
 	},
+	phpunit: {
+		src: 'tests\\phpunit.xml',
+		phpunitpath: 'vendor\\bin\\phpunit'
+	},
 	scripts: {
 		src: [
 			'src/js/bower_components/dropzone/dist/min/dropzone.min.js',

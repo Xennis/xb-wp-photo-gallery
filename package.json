@@ -9,6 +9,7 @@
     "gulp-load-plugins": "*",
 	"gulp-minify-css": "*",
     "gulp-notify": "^2.2.0",
+	"gulp-phpunit": "*",
     "gulp-rename": "*",	
     "gulp-size": "*",
 	"gulp-uglify": "*",
